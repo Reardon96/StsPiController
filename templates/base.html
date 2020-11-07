@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta  name="viewport" content="width=device-width, initial-scale=1.0" charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+    <script>
+        function makeHttpObject() {
+            try {return new XMLHttpRequest();}
+            catch (error) {}
+            try {return new ActiveXObject("Msxml2.XMLHTTP");}
+            catch (error) {}
+            try {return new ActiveXObject("Microsoft.XMLHTTP");}
+            catch (error) {}
+            throw new Error("Could not create HTTP request object.");
+        }
+        
+        var request = makeHttpObject();
+        var leftMotor = 0;
+        var rightMotor = 0;
+
+        function motor_l(lspeed) {
+            leftMotor = lspeed;
+            //setTimeout(function(){set_motor();}, 100);
+            set_motor()
+            document.getElementById("leftMotorValBox").innerHTML=lspeed;
+        }
+
+        function motor_r(rspeed) {
+            rightMotor = rspeed;
+            //setTimeout(function(){set_motor();}, 100);
+            set_motor()
+            document.getElementById("rightMotorValBox").innerHTML=rspeed;
+        }
+
+        function set_motor() {
+            var motor_url = "/motor?l=" + leftMotor.toString() + "&r=" + rightMotor.toString();
+            request.open("GET", motor_url, true);
+            request.send();
+        }   
+
+        function record(recordSelection){
+            if (recordSelection == "1") {
+                document.getElementById("recordCheckbox").value = "0";
+            }
+            else {
+                document.getElementById("recordCheckbox").value = "1";
+            }
+            
+            recordSelection = document.getElementById("recordCheckbox").value;
+            var record_url = "/record?r=" + recordSelection.toString();
+            request.open("GET", record_url, true);
+            request.send();
+        }
+    </script>
+</head>
+<body>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>
